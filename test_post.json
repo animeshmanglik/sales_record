@@ -1,0 +1,42 @@
+[
+	{
+		"vehicle": {
+			"vin": "2A8HR64X38R787250",
+			"make": "audi",
+			"model": "a4",
+			"year": 2002
+		},
+		"buyer": {
+			"type": "person",
+			"first_name": "Animesh",
+			"last_name": "Manglik"
+		},
+		"seller": {
+			"type": "dealership",
+			"name": "bmw",
+			"location": "thousand oaks"
+		},
+		"price": 15000,
+		"transaction_date": "2017-09-23"
+	},
+	{
+		"vehicle": {
+			"vin": "4A8H464Z38R787250",
+			"make": "bmw",
+			"model": "328",
+			"year": 2011
+		},
+		"buyer": {
+			"type": "person",
+			"first_name": "Animesh",
+			"last_name": "Manglik"
+		},
+		"seller": {
+			"type": "dealership",
+			"name": "bmw",
+			"location": "328"
+		},
+		"price": 33000,
+		"transaction_date": "2017-11-23"
+	}
+]

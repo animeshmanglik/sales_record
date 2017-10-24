@@ -34,9 +34,49 @@
 		"seller": {
 			"type": "dealership",
 			"name": "bmw",
-			"location": "328"
+			"location": "simi valley"
 		},
 		"price": 33000,
 		"transaction_date": "2017-11-23"
+	},
+	{
+		"vehicle": {
+			"vin": "4A8H464Z38R787250",
+			"make": "vw",
+			"model": "polo",
+			"year": 2010
+		},
+		"buyer": {
+			"type": "person",
+			"first_name": "John",
+			"last_name": "Doe"
+		},
+		"seller": {
+			"type": "dealership",
+			"name": "vw",
+			"location": "hollywood"
+		},
+		"price": 27000,
+		"transaction_date": "2014-05-23"
+	},
+	{
+		"vehicle": {
+			"vin": "4A8H464Z38R787250",
+			"make": "hyundai",
+			"model": "elantra",
+			"year": 2006
+		},
+		"buyer": {
+			"type": "person",
+			"first_name": "Mary",
+			"last_name": "Jane"
+		},
+		"seller": {
+			"type": "dealership",
+			"name": "hyundai",
+			"location": "santa monica"
+		},
+		"price": 33000,
+		"transaction_date": "2014-07-13"
 	}
 ]

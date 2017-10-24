@@ -5,7 +5,6 @@ import logging
 import sys
 from flask import Flask
 from flask import jsonify
-from flask_swagger import swagger
 from api.utils.database import db
 from api.utils.responses import response_with
 import api.utils.responses as resp

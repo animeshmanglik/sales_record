@@ -20,21 +20,29 @@ route_path_general = Blueprint("route_path_general", __name__)
 sale_schema = SaleSchema(many=True)
 
 
-@route_path_general.route('/v1/sale', methods=['GET'])
+@route_path_general.route('/sale', methods=['GET'])
 def get_sales_record():
     """Get all sales Records
     Returns Sales object
     """
+    query_params = request.args
     sales = []
     try:
-        sale_query = Sale.query.all()
+        if query_params.get('vin'):
+            vin = query_params.get('vin')
+            sale_query = Sale.query \
+                        .filter_by(vin=vin) \
+                        .order_by('transaction_date desc') \
+                        .limit(1)
+        else:
+            sale_query = Sale.query.all()
         sales, error = sale_schema.dump(sale_query)
         return response_with(resp.SUCCESS_200, value={"sales": sales})
     except Exception:
         return response_with(resp.BAD_REQUEST_400)
 
 
-@route_path_general.route('/v1/sale', methods=['POST'])
+@route_path_general.route('/sale', methods=['POST'])
 def create_sale_record():
     """Create sales Records
     Input could be a single Record or a file upload
@@ -59,7 +67,7 @@ def create_sale_record():
         return response_with(resp.BAD_REQUEST_400)
 
 
-@route_path_general.route('/v1/sale/vehicle', methods=['GET'])
+@route_path_general.route('/sale/vehicle', methods=['GET'])
 def get_sales_record_by_vehicle():
     """Get all sales Records based on a vehicle make, model, year
     Returns Sales object
@@ -95,18 +103,25 @@ def get_sales_record_by_vehicle():
         return response_with(resp.BAD_REQUEST_400)
 
 
-@route_path_general.route('/v1/sale/dealership', methods=['GET'])
+@route_path_general.route('/sale/dealership', methods=['GET'])
 def get_sales_record_by_dealership():
     """Get all sales Records based on a particular dealership
     Returns Sales object
     """
     query_params = request.args
-    vehicle_schema = VehicleSchema(many=True, only=['vin'])
+    dealership_filter = {}
+    sales = []
+    if query_params.get('name'):
+        name = query_params.get('name')
+        dealership_filter["name"] = name
+    if query_params.get('location'):
+        location = query_params.get('location')
+        dealership_filter["location"] = location
 
     try:
-        if query_params.get('dealership'):
+        if len(dealership_filter):
             dealership = query_params.get('dealership')
-            dealership_query = Dealership.query.filter_by(name=dealership)
+            dealership_query = Dealership.query.filter_by(**dealership_filter)
             dealership_schema = DealershipSchema(many=True, only=['uuid'])
             dealerships, error = dealership_schema.dump(dealership_query)
 
@@ -126,24 +141,12 @@ def get_sales_record_by_dealership():
                 sales, error = sale_schema.dump(sale_buyer_query)
 
         return response_with(resp.SUCCESS_200, value={"sales": sales})
-    except Exception:
+    except Exception as e:
+        print e
         return response_with(resp.BAD_REQUEST_400)
 
 
-@route_path_general.route('/v1/sale/<int:vin>', methods=['GET'])
-def get_sales_detail_by_vin(vin):
-    """Get all sales Records based on a vehicle vin number
-    Returns Sales object
-    """
-    fetched = Sale.query \
-                .filter_by(vin=vin) \
-                .order_by('transaction_date desc') \
-                .limit(1)
-    sales, error = sale_schema.dump(fetched)
-    return response_with(resp.SUCCESS_200, value={"sales": sales})
-
-
-@route_path_general.route('/v1/vehicle', methods=['GET'])
+@route_path_general.route('/vehicle', methods=['GET'])
 def get_vehicles_record():
     """Get all vehicle Records
     Returns Vehicle object
@@ -154,7 +157,7 @@ def get_vehicles_record():
     return response_with(resp.SUCCESS_200, value={"vehicles": vehicles})
 
 
-@route_path_general.route('/v1/vehicle', methods=['POST'])
+@route_path_general.route('/vehicle', methods=['POST'])
 def create_vehicles_record():
     """Get all vehicle Records
     Returns Vehicle object
@@ -167,32 +170,22 @@ def create_vehicles_record():
         db.session.commit()
         return response_with(resp.SUCCESS_200, value={"vehicle": result})
     except Exception as e:
-        print e
         db.session.rollback()
         return response_with(resp.BAD_REQUEST_400)
 
 
-@route_path_general.route('/v1/vehicle', methods=['DELETE'])
-def delete_vehicles_record():
-    """Delete all Vehicle Records
-    Returns Sales object
-    """
-    fetched = Vehicle.query.delete()
-    return response_with(resp.SUCCESS_200, value={"vehicles": fetched})
-
-
-@route_path_general.route('/v1/dealership', methods=['GET'])
+@route_path_general.route('/dealership', methods=['GET'])
 def get_dealerships_record():
     """Get all dealership Records
     Returns Dealership object
     """
-    fetched = Dealership.query.all()
+    dealership_query = Dealership.query.all()
     dealership_schema = DealershipSchema(many=True)
-    dealerships, error = dealership_schema.dump(fetched)
+    dealerships, error = dealership_schema.dump(dealership_query)
     return response_with(resp.SUCCESS_200, value={"dealerships": dealerships})
 
 
-@route_path_general.route('/v1/person', methods=['GET'])
+@route_path_general.route('/person', methods=['GET'])
 def get_persons_record():
     """Get all person Records
     Returns Person object
@@ -203,7 +196,7 @@ def get_persons_record():
     return response_with(resp.SUCCESS_200, value={"persons": persons})
 
 
-@route_path_general.route('/v1/account', methods=['GET'])
+@route_path_general.route('/account', methods=['GET'])
 def get_accounts_record():
     """Get all account Records
     Returns Account object
@@ -214,13 +207,13 @@ def get_accounts_record():
     return response_with(resp.SUCCESS_200, value={"accounts": accounts})
 
 
-@route_path_general.route('/v1/clear', methods=['DELETE'])
+@route_path_general.route('/clear', methods=['DELETE'])
 def get_clear_record():
     """Remove all the entries in the db
     Returns an empty object
     """
     try:
-        delete_all_records()
-        return response_with(resp.SUCCESS_200, value={"deleted": fetched})
+        did_delete = delete_all_records()
+        return response_with(resp.SUCCESS_200, value={"deleted": did_delete})
     except Exception:
         return response_with(resp.SERVER_ERROR_500)

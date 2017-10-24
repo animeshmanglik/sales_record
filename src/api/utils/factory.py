@@ -17,7 +17,7 @@ def create_app(config):
 
     app.config.from_object(config)
 
-    app.register_blueprint(route_path_general, url_prefix='/api')
+    app.register_blueprint(route_path_general, url_prefix='/api/v1')
 
     # START GLOBAL HTTP CONFIGURATIONS
     @app.after_request

@@ -17,7 +17,7 @@ from api.models.model_account import Account, AccountSchema
 
 
 route_path_general = Blueprint("route_path_general", __name__)
-sale_schema = SaleSchema(many=True)
+sale_schema = SaleSchema(many=True, exclude=['id', 'created'])
 
 
 @route_path_general.route('/sale', methods=['GET'])
@@ -152,7 +152,7 @@ def get_vehicles_record():
     Returns Vehicle object
     """
     fetched = Vehicle.query.all()
-    vehicle_schema = VehicleSchema(many=True)
+    vehicle_schema = VehicleSchema(many=True, exclude=['created'])
     vehicles, error = vehicle_schema.dump(fetched)
     return response_with(resp.SUCCESS_200, value={"vehicles": vehicles})
 
@@ -180,7 +180,7 @@ def get_dealerships_record():
     Returns Dealership object
     """
     dealership_query = Dealership.query.all()
-    dealership_schema = DealershipSchema(many=True)
+    dealership_schema = DealershipSchema(many=True, exclude=['created'])
     dealerships, error = dealership_schema.dump(dealership_query)
     return response_with(resp.SUCCESS_200, value={"dealerships": dealerships})
 
@@ -191,7 +191,7 @@ def get_persons_record():
     Returns Person object
     """
     fetched = Person.query.all()
-    person_schema = PersonSchema(many=True)
+    person_schema = PersonSchema(many=True, exclude=['created'])
     persons, error = person_schema.dump(fetched)
     return response_with(resp.SUCCESS_200, value={"persons": persons})
 
@@ -202,7 +202,7 @@ def get_accounts_record():
     Returns Account object
     """
     fetched = Account.query.all()
-    account_schema = AccountSchema(many=True)
+    account_schema = AccountSchema(many=True, exclude=['created'])
     accounts, error = account_schema.dump(fetched)
     return response_with(resp.SUCCESS_200, value={"accounts": accounts})
 

@@ -7,7 +7,7 @@ from api.models.model_account import Account, AccountSchema
 
 
 def add_vehicle_record(data):
-    vehicle_schema = VehicleSchema()
+    vehicle_schema = VehicleSchema(exclude=['created'])
     vehicle, error = vehicle_schema.load(data)
     result = vehicle_schema.dump(vehicle.create()).data
     return result
@@ -22,7 +22,7 @@ def add_delearship_record(data):
     data["uuid"] = account_id
     add_account_record(account_data)
 
-    dealership_schema = DealershipSchema()
+    dealership_schema = DealershipSchema(exclude=['created'])
     dealership, error = dealership_schema.load(data)
     result = dealership_schema.dump(dealership.create()).data
     return result
@@ -37,14 +37,14 @@ def add_person_record(data):
     data["uuid"] = account_id
     add_account_record(account_data)
 
-    person_schema = PersonSchema()
+    person_schema = PersonSchema(exclude=['created'])
     person, error = person_schema.load(data)
     result = person_schema.dump(person.create()).data
     return result
 
 
 def add_account_record(data):
-    account_schema = AccountSchema()
+    account_schema = AccountSchema(exclude=['created'])
     account, error = account_schema.load(data)
     result = account_schema.dump(account.create()).data
     return result
@@ -58,7 +58,7 @@ def add_dealer_person(data):
 
 
 def add_sale_record(data):
-    sale_schema = SaleSchema()
+    sale_schema = SaleSchema(exclude=['id', 'created'])
     sale, error = sale_schema.load(data)
     result = sale_schema.dump(sale.create()).data
     return result
